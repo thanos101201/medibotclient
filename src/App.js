@@ -86,12 +86,12 @@ function App() {
             text: "I am not having information regarding asked query"
           }
         ]
-        axios.post('http://localhost:3001', {
+        axios.post('https://demochatbotserver.vercel.app/', {
           user: "user",
           query: prompt
         }).then((response) => {
           if(response.data.message === "Chat added"){
-            axios.post('http://localhost:3001', {
+            axios.post('https://demochatbotserver.vercel.app/', {
               user: "chat",
               query: "I am not having information regarding asked query"
             }).then((response1) => {
