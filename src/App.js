@@ -11,14 +11,70 @@ import { Container, Row, Col } from 'reactstrap';
 function App() {
   const [userPrompt, setUserPrompt] = useState([]);
   const [questionaire, setQuestionaire] = useState([]);
+  const [countyName, setCountyName] = useState("");
 
+  const countyNames = [
+    "Abbeville",
+    "Aiken",
+    "Allendale",
+    "Anderson",
+    "Bamberg",
+    "Barnwell",
+    "Beaufort",
+    "Berkeley",
+    "Calhoun",
+    "Charleston",
+    "Cherokee",
+    "Chester",
+    "Chesterfield",
+    "Clarendon",
+    "Colleton",
+    "Darlington",
+    "Dillon",
+    "Dorchester",
+    "Edgefield",
+    "Fairfield",
+    "Florence",
+    "Georgetown",
+    "Greenville",
+    "Greenwood",
+    "Hampton",
+    "Horry",
+    "Jasper",
+    "Kershaw",
+    "Lancester",
+    "Laurens",
+    "Lee",
+    "Lexington",
+    "Marion",
+    "Marlborom",
+    "McCormick",
+    "Newberry",
+    "Oconee",
+    "Orangeburg",
+    "Pickens",
+    "Richland",
+    "Saluda",
+    "Spartanburg",
+    "Sumter",
+    "Union",
+    "Williamsburg",
+    "York"
+  ]
   const handleClick = (prompt) => {
     
     if(questionaire !== undefined && questionaire.length > 0){
-      console.log(prompt);
+      // console.log(prompt);
       var questionIndex = questionaire.filter(question => question[0] === prompt);
-      console.log(questionIndex);
+      // console.log(questionIndex);
+      const countyNams = getCountyNameFromPrompt(prompt);
+      console.log(countyNams);
       
+      if(countyNams.length > 0){
+        const name = countyNams[0].replace(/[^a-zA-Z0-9 ]/g, "");
+        console.log(name);
+        setCountyName(name);
+      }
       if(questionIndex === null || questionIndex.length === 0){
         var arr = [
           {
@@ -71,21 +127,39 @@ function App() {
             }).then((response1) => {
               console.log(response.data.message);
             }).catch((eror1) => {
-              alert(eror1.message);
+              // alert(eror1.message);
             })
           }
         }).catch((eror) => {
-          alert(eror.message);
+          // alert(eror.message);
         })
         setUserPrompt(arr);
       }
     }
   }
 
+  const getCountyNameFromPrompt = (prompt) => {
+    var tokens = prompt.split(" ");
+    console.log(tokens[0]);
+    var elements = [];
+    for(var element in tokens){
+      var name = tokens[element].replace(/[^a-zA-Z0-9 ]/g, "");
+      console.log(`${tokens[element]} : ${name}`);
+      
+      if(countyNames.indexOf(name) !== -1){
+        elements.push(name);
+      }
+    }
+
+    console.log(elements);
+    
+    return elements;
+  }
+  useEffect(() => {}, [countyName]);
   useEffect(() => {
     const fetchData = async () => {
       const data = await CSVReader(CSVPath);
-      console.log(data);
+      // console.log(data);
       setQuestionaire(data.data);
     };
     fetchData();
@@ -98,7 +172,7 @@ function App() {
           md={8}
           className="d-flex justify-content-center align-items-center bg-light border-end"
         >
-          <MapChart countyName={"Aiken"} />
+          <MapChart countyName={countyName} />
         </Col>
 
         {/* Chat Section */}

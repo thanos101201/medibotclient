@@ -25,12 +25,12 @@ function ChatPage({ query }) {
       }
     })
     .catch((eror) => {
-      alert(eror.message)
+      // alert(eror.message)
     });
   }, []);
 
   useEffect(() => {
-    console.log(prompts);
+    // console.log(prompts);
     
   }, [prompts]);
   const renderChat = () => {
