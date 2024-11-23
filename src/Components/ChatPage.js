@@ -13,7 +13,7 @@ function ChatPage({ query }) {
   }, [query]);
 
   useEffect(() => {
-    axios.get('http://localhost:3001')
+    axios.get('https://demochatbotserver.vercel.app/')
     .then((response) => {
       if(response.data !== undefined && response.data.message !== undefined){
         var chats = [];

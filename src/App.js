@@ -116,12 +116,12 @@ function App() {
             text: questionIndex[0][1]
           }
         ]
-        axios.post('http://localhost:3001', {
+        axios.post('https://demochatbotserver.vercel.app/', {
           user: "user",
           query: prompt
         }).then((response) => {
           if(response.data.message === "Chat added"){
-            axios.post('http://localhost:3001', {
+            axios.post('https://demochatbotserver.vercel.app/', {
               user: "chat",
               query: questionIndex[0][1]
             }).then((response1) => {
