@@ -7,11 +7,16 @@ import CSVReader from './Components/CSVReader';
 import CSVPath from './assets/qna_pairs_generated_large.csv';
 import ChatPage from './Components/ChatPage';
 import QueryBox from './Components/QueryBox';
-import { Container, Row, Col } from 'reactstrap';
+import { Container, Row, Col, Nav, NavbarBrand, Navbar, Button, Modal, TabContent, TabPane, ModalBody, NavLink, ModalHeader } from 'reactstrap';
+import Signup from './Components/Signup';
+import Login from './Components/Login';
 function App() {
   const [userPrompt, setUserPrompt] = useState([]);
   const [questionaire, setQuestionaire] = useState([]);
   const [countyName, setCountyName] = useState("");
+  const [user, setUser] = useState({name: "User"})
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [ activeTab, setActiveTab ] = useState("1");
 
   const countyNames = [
     "Abbeville",
@@ -61,8 +66,9 @@ function App() {
     "Williamsburg",
     "York"
   ]
+  // const serverUrl = "https://demochatbotserver.vercel.app";
+  const serverUrl = "http://localhost:3001"
   const handleClick = (prompt) => {
-    
     if(questionaire !== undefined && questionaire.length > 0){
       // console.log(prompt);
       var questionIndex = questionaire.filter(question => question[0] === prompt);
@@ -78,61 +84,73 @@ function App() {
       if(questionIndex === null || questionIndex.length === 0){
         var arr = [
           {
-            user: "user",
+            userTag: "user",
             text: prompt
           },
           {
-            user: "chat",
+            userTag: "chat",
             text: "I am not having information regarding asked query"
           }
         ]
-        axios.post('https://demochatbotserver.vercel.app/', {
-          user: "user",
-          query: prompt
-        }).then((response) => {
-          if(response.data.message === "Chat added"){
-            axios.post('https://demochatbotserver.vercel.app/', {
-              user: "chat",
-              query: "I am not having information regarding asked query"
-            }).then((response1) => {
-              console.log(response.data.message);
-            }).catch((eror1) => {
-              alert(eror1.message);
-            })
-          }
-        }).catch((eror) => {
-          alert(eror.message);
-        })
+        console.log(user.email);
+        
+        if(user.email !== undefined && user.email !== null && user.email.length !== 0){
+          axios.post(`${serverUrl}/chat`, {
+            userTag: "user",
+            email: user.email,
+            query: prompt
+          }).then((response) => {
+            if(response.data.message === "Chat added"){
+              axios.post(`${serverUrl}/chat`, {
+                userTag: "chat",
+                email: user.email,
+                query: "I am not having information regarding asked query"
+              }).then((response1) => {
+                console.log(response.data.message);
+              }).catch((eror1) => {
+                alert(eror1.message);
+              })
+            }
+          }).catch((eror) => {
+            alert(eror.message);
+          })
+        }
         setUserPrompt(arr);
       }
       else{
         var arr = [
           {
-            user: "user",
+            userTag: "user",
             text: prompt
           },
           {
-            user: "chat",
+            userTag: "chat",
             text: questionIndex[0][1]
           }
         ]
-        axios.post('https://demochatbotserver.vercel.app/', {
-          user: "user",
-          query: prompt
-        }).then((response) => {
-          if(response.data.message === "Chat added"){
-            axios.post('https://demochatbotserver.vercel.app/', {
-              user: "chat",
-              query: questionIndex[0][1]
-            }).then((response1) => {
-              console.log(response.data.message);
-            }).catch((eror1) => {
-              // alert(eror1.message);
-            })
-          }
-        }).catch((eror) => {
-          // alert(eror.message);
-        })
+        console.log(user.email);
+        
+        if(user.email !== undefined && user.email !== null && user.email.length !== 0){
+          axios.post(`${serverUrl}/chat`, {
+            userTag: "user",
+            query: prompt,
+            email: user.email
+          }).then((response) => {
+            if(response.data.message === "Chat added"){
+              axios.post(`${serverUrl}/chat`, {
+                userTag: "chat",
+                email : user.email,
+                query: questionIndex[0][1]
+              }).then((response1) => {
+                console.log(response.data.message);
+              }).catch((eror1) => {
+                // alert(eror1.message);
+              })
+            }
+          }).catch((eror) => {
+            // alert(eror.message);
+          })
+        }
         setUserPrompt(arr);
       }
     }
@@ -155,17 +173,45 @@ function App() {
     
     return elements;
   }
-  useEffect(() => {}, [countyName]);
+  const handleUserUpdate = (name) => {
+    setUser(name);
+  }
+  useEffect(() => {}, [countyName, user]);
   useEffect(() => {
     const fetchData = async () => {
       const data = await CSVReader(CSVPath);
-      // console.log(data);
       setQuestionaire(data.data);
     };
     fetchData();
   }, []);
+  const toggle = () => setIsModalOpen(!isModalOpen);
   return (
     <Container fluid className="vh-100 d-flex flex-column">
+      <Modal isOpen={isModalOpen} toggle={toggle}>
+        <ModalHeader>
+          <Nav tabs>
+            <NavLink onClick={() => setActiveTab("1")}>Login</NavLink>
+            <NavLink onClick={() => setActiveTab("2")}>Sign up</NavLink>
+          </Nav>
+        </ModalHeader>
+        <ModalBody>
+            <TabContent activeTab={activeTab}>
+              <TabPane tabId="1">
+                <Login handleUserUpdate={handleUserUpdate} />
+              </TabPane>
+              <TabPane tabId="2">
+                <Signup handleUserUpdate={handleUserUpdate} />
+              </TabPane>
+            </TabContent>
+        </ModalBody>
+      </Modal>
+      <Navbar>
+        <NavbarBrand>
+          <Button style={{backgroundColor:"white", border:'0 px', borderColor:'white'}} onClick={() => setIsModalOpen(!isModalOpen)}>
+            <h6 style={{color:'black'}}>{user.name}</h6>
+          </Button>
+        </NavbarBrand>
+      </Navbar>
       <Row className="flex-grow-1">
         {/* Map Section */}
         <Col
@@ -179,7 +225,7 @@ function App() {
         <Col md={4} className="d-flex flex-column">
           {/* Chat Content */}
           <div className="flex-grow-1 overflow-auto p-3">
-            <ChatPage query={userPrompt} />
+            <ChatPage query={userPrompt} email={user.email} />
           </div>
           {/* Query Box */}
           <div className="border-top p-3 bg-light">

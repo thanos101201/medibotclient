@@ -3,9 +3,10 @@ import { Row, Col, Label, Container } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 
-function ChatPage({ query }) {
+function ChatPage({ query, email }) {
   const [prompts, setPrompts] = useState([]);
-
+  const serverUrl = "http://localhost:3001";
+  // const serverUrl = "https://demochatbotserver.vercel.app";
   useEffect(() => {
     if (query && query.length > 0) {
       setPrompts([...prompts, ...query]);
@@ -13,7 +14,10 @@ function ChatPage({ query }) {
   }, [query]);
 
   useEffect(() => {
-    axios.get('https://demochatbotserver.vercel.app/')
+    if(email === undefined || email === null || email.length === 0){
+      return;
+    }
+    axios.get(`${serverUrl}/chat?email=${email}`)
     .then((response) => {
       if(response.data !== undefined && response.data.message !== undefined){
         var chats = [];
@@ -27,12 +31,12 @@ function ChatPage({ query }) {
     .catch((eror) => {
       // alert(eror.message)
     });
-  }, []);
+  }, [email]);
 
   useEffect(() => {
-    // console.log(prompts);
+    console.log(email);
     
-  }, [prompts]);
+  }, [prompts, email]);
   const renderChat = () => {
     if (prompts.length === 0) {
       return (
@@ -46,7 +50,7 @@ function ChatPage({ query }) {
       <Row
         key={index}
         className={`my-2 ${
-          prompt.user === "user" ? "justify-content-end" : "justify-content-start"
+          prompt.userTag === "user" ? "justify-content-end" : "justify-content-start"
         }`}
       >
         <Col
@@ -55,13 +59,13 @@ function ChatPage({ query }) {
           md="6"
           lg="5"
           className={`p-3 rounded shadow-sm ${
-            prompt.user === "user" ? "bg-primary text-white" : "bg-light text-dark"
+            prompt.userTag === "user" ? "bg-primary text-white" : "bg-light text-dark"
           }`}
         >
           <Label>{prompt.text}</Label>
         </Col>
       </Row>
-    ));
+      ));
   };
 
   return (

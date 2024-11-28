@@ -13,6 +13,8 @@ function QueryBox({setUserPrompt}) {
             </div>
             <div className='col-3 d-flex align-items-center'>
                 <Button style={{border:'0px'}} onClick={() => {
+                        console.log(query);
+                        
                         setUserPrompt(query);
                     }}>
                     <AiOutlineSend />
