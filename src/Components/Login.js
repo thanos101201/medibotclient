@@ -7,7 +7,8 @@ function Login({ handleUserUpdate }) {
     const [password, setPassword] = useState("");
     const [ borderColor, setBorderColor ] = useState("black")
 
-    const serverUrl = "http://localhost:3001"
+    // const serverUrl = "http://localhost:3001"
+  const serverUrl = "https://demochatbotserver.vercel.app";
     const handleLogin = () => {
         axios.post(`${serverUrl}/user/login`, {
             email: email,

@@ -5,8 +5,8 @@ import axios from 'axios';
 
 function ChatPage({ query, email }) {
   const [prompts, setPrompts] = useState([]);
-  const serverUrl = "http://localhost:3001";
-  // const serverUrl = "https://demochatbotserver.vercel.app";
+  // const serverUrl = "http://localhost:3001";
+  const serverUrl = "https://demochatbotserver.vercel.app";
   useEffect(() => {
     if (query && query.length > 0) {
       setPrompts([...prompts, ...query]);
