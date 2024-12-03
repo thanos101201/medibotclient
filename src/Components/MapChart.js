@@ -13,6 +13,7 @@ function MapChart({ countyName }) {
   const [mchData, setMchData] = useState([]);
   const [selectedCounty, setSelectedCounty] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [hoveredCounty, setHoveredCounty] = useState("");
 
   useEffect(() => {
     fetch(jsonPath)
@@ -103,43 +104,63 @@ function MapChart({ countyName }) {
           }}
         >
           {geoJson ? (
-            <ComposableMap
-              projectionConfig={{ scale: 250 }}
-              style={{ width: "100%", height: "auto" }}
-            >
-              <ZoomableGroup zoom={zoomVal} center={center}>
-                <Geographies geography={geoJson}>
-                  {({ geographies }) =>
-                    geographies.map((geo) => (
-                      <Geography
-                        key={geo.rsmKey}
-                        geography={geo}
-                        style={{
-                          default: {
-                            fill: randomColorGenerator(),
-                            stroke: "#000",
-                            strokeWidth: 0.1,
-                            outline: "none",
-                          },
-                          hover: {
-                            fill: "#FFD700",
-                            outline: "none",
-                          },
-                          pressed: {
-                            fill: "#FFA500",
-                            outline: "none",
-                          },
-                        }}
-                        onClick={() => {
-                          setSelectedCounty(geo.properties.county_nam);
-                          setIsModalOpen(true);
-                        }}
-                      />
-                    ))
-                  }
-                </Geographies>
-              </ZoomableGroup>
-            </ComposableMap>
+            <>
+              <ComposableMap
+                projectionConfig={{ scale: 250 }}
+                style={{ width: "100%", height: "auto" }}
+              >
+                <ZoomableGroup zoom={zoomVal} center={center}>
+                  <Geographies geography={geoJson}>
+                    {({ geographies }) =>
+                      geographies.map((geo) => (
+                        <Geography
+                          key={geo.rsmKey}
+                          geography={geo}
+                          style={{
+                            default: {
+                              fill: randomColorGenerator(),
+                              stroke: "#000",
+                              strokeWidth: 0.1,
+                              outline: "none",
+                            },
+                            hover: {
+                              fill: "#FFD700",
+                              outline: "none",
+                            },
+                            pressed: {
+                              fill: "#FFA500",
+                              outline: "none",
+                            },
+                          }}
+                          onMouseEnter={() => setHoveredCounty(geo.properties.county_nam)}
+                          onMouseLeave={() => setHoveredCounty("")}
+                          onClick={() => {
+                            setSelectedCounty(geo.properties.county_nam);
+                            setIsModalOpen(true);
+                          }}
+                        />
+                      ))
+                    }
+                  </Geographies>
+                </ZoomableGroup>
+              </ComposableMap>
+              {hoveredCounty && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "10px",
+                    right: "10px",
+                    backgroundColor: "rgba(255, 255, 255, 0.9)",
+                    padding: "8px 12px",
+                    borderRadius: "4px",
+                    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {hoveredCounty}
+                </div>
+              )}
+            </>
           ) : (
             <div
               className="d-flex justify-content-center align-items-center"
