@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import MapChart from './Components/MapChart';
 import axios from 'axios';
 import CSVReader from './Components/CSVReader';
-import CSVPath from './assets/qna_pairs_generated_large.csv';
+import CSVPath from './assets/qna_pairs_generated_large_version3.csv';
 import ChatPage from './Components/ChatPage';
 import QueryBox from './Components/QueryBox';
 import { Container, Row, Col, Nav, NavbarBrand, Navbar, Button, Modal, TabContent, TabPane, ModalBody, NavLink, ModalHeader } from 'reactstrap';
@@ -17,6 +17,7 @@ function App() {
   const [user, setUser] = useState({name: "User"})
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [ activeTab, setActiveTab ] = useState("1");
+  const [ showChat, setShowChat ] = useState(false);
 
   const countyNames = [
     "Abbeville",
@@ -185,54 +186,136 @@ function App() {
     fetchData();
   }, []);
   const toggle = () => setIsModalOpen(!isModalOpen);
+  // return (
+  //   <Container fluid className="vh-100 d-flex flex-column">
+  //     <Modal isOpen={isModalOpen} toggle={toggle}>
+  //       <ModalHeader>
+  //         <Nav tabs>
+  //           <NavLink onClick={() => setActiveTab("1")}>Login</NavLink>
+  //           <NavLink onClick={() => setActiveTab("2")}>Sign up</NavLink>
+  //         </Nav>
+  //       </ModalHeader>
+  //       <ModalBody>
+  //           <TabContent activeTab={activeTab}>
+  //             <TabPane tabId="1">
+  //               <Login handleUserUpdate={handleUserUpdate} />
+  //             </TabPane>
+  //             <TabPane tabId="2">
+  //               <Signup handleUserUpdate={handleUserUpdate} />
+  //             </TabPane>
+  //           </TabContent>
+  //       </ModalBody>
+  //     </Modal>
+  //     <Navbar>
+  //       <NavbarBrand>
+  //         <Button style={{backgroundColor:"white", border:'0 px', borderColor:'white'}} onClick={() => setIsModalOpen(!isModalOpen)}>
+  //           <h6 style={{color:'black'}}>{user.name}</h6>
+  //         </Button>
+  //       </NavbarBrand>
+  //     </Navbar>
+  //     <Row className="flex-grow-1">
+  //       {/* Map Section */}
+  //       <Col
+  //         md={8}
+  //         className="d-flex justify-content-center align-items-center bg-light border-end"
+  //       >
+  //         <MapChart countyName={countyName} />
+  //       </Col>
+
+  //       {/* Chat Section */}
+  //       <Col md={4} className="d-flex flex-column">
+  //         {/* Chat Content */}
+  //         <div className="flex-grow-1 overflow-auto p-3">
+  //           <ChatPage query={userPrompt} email={user.email} />
+  //         </div>
+  //         {/* Query Box */}
+  //         <div className="border-top p-3 bg-light">
+  //           <QueryBox setUserPrompt={handleClick} />
+  //         </div>
+  //       </Col>
+  //     </Row>
+  //   </Container>
+  // );
   return (
     <Container fluid className="vh-100 d-flex flex-column">
+      {/* Modal for Login and Signup */}
       <Modal isOpen={isModalOpen} toggle={toggle}>
         <ModalHeader>
           <Nav tabs>
-            <NavLink onClick={() => setActiveTab("1")}>Login</NavLink>
-            <NavLink onClick={() => setActiveTab("2")}>Sign up</NavLink>
+            <NavLink onClick={() => setActiveTab('1')}>Login</NavLink>
+            <NavLink onClick={() => setActiveTab('2')}>Sign up</NavLink>
           </Nav>
         </ModalHeader>
         <ModalBody>
-            <TabContent activeTab={activeTab}>
-              <TabPane tabId="1">
-                <Login handleUserUpdate={handleUserUpdate} />
-              </TabPane>
-              <TabPane tabId="2">
-                <Signup handleUserUpdate={handleUserUpdate} />
-              </TabPane>
-            </TabContent>
+          <TabContent activeTab={activeTab}>
+            <TabPane tabId="1">
+              <Login handleUserUpdate={handleUserUpdate} />
+            </TabPane>
+            <TabPane tabId="2">
+              <Signup handleUserUpdate={handleUserUpdate} />
+            </TabPane>
+          </TabContent>
         </ModalBody>
       </Modal>
+
+      {/* Navbar */}
       <Navbar>
         <NavbarBrand>
-          <Button style={{backgroundColor:"white", border:'0 px', borderColor:'white'}} onClick={() => setIsModalOpen(!isModalOpen)}>
-            <h6 style={{color:'black'}}>{user.name}</h6>
+          <Button
+            style={{
+              backgroundColor: 'white',
+              border: '0px',
+              borderColor: 'white',
+            }}
+            onClick={() => setIsModalOpen(!isModalOpen)}
+          >
+            <h6 style={{ color: 'black' }}>{user.name}</h6>
           </Button>
         </NavbarBrand>
       </Navbar>
+
+      {/* Main Content */}
       <Row className="flex-grow-1">
         {/* Map Section */}
         <Col
-          md={8}
-          className="d-flex justify-content-center align-items-center bg-light border-end"
+          className="d-flex justify-content-center align-items-center bg-light"
+          style={{ width: '100%' }}
         >
           <MapChart countyName={countyName} />
         </Col>
 
-        {/* Chat Section */}
-        <Col md={4} className="d-flex flex-column">
-          {/* Chat Content */}
-          <div className="flex-grow-1 overflow-auto p-3">
-            <ChatPage query={userPrompt} email={user.email} />
-          </div>
-          {/* Query Box */}
-          <div className="border-top p-3 bg-light">
-            <QueryBox setUserPrompt={handleClick} />
-          </div>
-        </Col>
+        {/* Chat Section - Conditionally Rendered */}
+        {showChat && (
+          <Col md={4} className="d-flex flex-column">
+            <div className="flex-grow-1 overflow-auto p-3">
+              <ChatPage query={userPrompt} email={user.email} />
+            </div>
+            <div className="border-top p-3 bg-light">
+              <QueryBox setUserPrompt={handleClick} />
+            </div>
+          </Col>
+        )}
       </Row>
+
+      {/* Button to Toggle Chat Section */}
+      <Button
+        onClick={() => setShowChat(!showChat)}
+        style={{
+          position: 'fixed',
+          bottom: '80px',
+          right: '20px',
+          borderRadius: '50%',
+          width: '60px',
+          height: '60px',
+          backgroundColor: '#007bff',
+          color: '#fff',
+          fontSize: '20px',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.2)',
+          border: 'none',
+        }}
+      >
+        {showChat ? '✕' : '💬'}
+      </Button>
     </Container>
   );
 }

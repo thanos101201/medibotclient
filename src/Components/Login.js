@@ -25,7 +25,9 @@ function Login({ handleUserUpdate }) {
             }
         }).catch((err) => {
             setBorderColor("red");
-            alert(err.message);
+            console.log(err);
+            
+            alert(err.response.data.message);
         });
     }
   return (
@@ -43,7 +45,7 @@ function Login({ handleUserUpdate }) {
                 <Label>Password</Label>
             </div>
             <div className='col-12 col-md-9'>
-                <Input style={{borderColor:`${borderColor}`}} placeholder='Enter the password associated with provided email.' onChange={(e) => setPassword(e.target.value)} />
+                <Input type='password' style={{borderColor:`${borderColor}`}} placeholder='Enter the password associated with provided email.' onChange={(e) => setPassword(e.target.value)} />
             </div>
         </div>
         <div className='row d-flex justify-content-center p-2'>

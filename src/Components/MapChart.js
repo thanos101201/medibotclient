@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import jsonPath from "../assets/South_carolina_County.geojson";
-// import mchCsvPath from "../assets/mch_data_download_organized.xlsx - Table 1.csv";
-import mchCsvPath from "../assets/mch_data_download_organized.csv.csv"
+import mchCsvPath from '../assets/South_Carolina_Healthviz_Version3_csv.csv';
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from "react-simple-maps";
 import { geoCentroid } from "d3-geo";
 import CSVReader from "./CSVReader";
@@ -10,7 +9,7 @@ import { Col, Label, Modal, ModalBody, ModalHeader, Row, Spinner } from "reactst
 
 function MapChart({ countyName }) {
   const [geoJson, setGeoJson] = useState(null);
-  const [zoomVal, setZoomVal] = useState(10);
+  const [zoomVal, setZoomVal] = useState(20);
   const [mchData, setMchData] = useState([]);
   const [selectedCounty, setSelectedCounty] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -29,7 +28,7 @@ function MapChart({ countyName }) {
   }, []);
 
   const center = useMemo(() => {
-    const defaultCenter = [-78, 35];
+    const defaultCenter = [-80, 35];
     if (!countyName || !geoJson?.features) return defaultCenter;
 
     const targetFeature = geoJson.features.find(
