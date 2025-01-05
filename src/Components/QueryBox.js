@@ -9,13 +9,14 @@ function QueryBox({setUserPrompt}) {
     <div className='container'>
         <div className='row d-flex justify-content-center'>
             <div className='col-9 d-flex align-items-center'>
-                <Input placeholder='Enter your query' onChange={(e) => setQuery(e.target.value)} />
+                <Input placeholder='Enter your query' value={query} onChange={(e) => setQuery(e.target.value)} />
             </div>
             <div className='col-3 d-flex align-items-center'>
                 <Button style={{border:'0px'}} onClick={() => {
                         console.log(query);
                         
                         setUserPrompt(query);
+                        setQuery("");
                     }}>
                     <AiOutlineSend />
                 </Button>
