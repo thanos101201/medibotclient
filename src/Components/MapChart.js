@@ -29,7 +29,7 @@ function MapChart({ countyName }) {
   }, []);
 
   const center = useMemo(() => {
-    const defaultCenter = [-80, 35];
+    const defaultCenter = [-80, 33];
     if (!countyName || !geoJson?.features) return defaultCenter;
 
     const targetFeature = geoJson.features.find(

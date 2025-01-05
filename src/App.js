@@ -177,7 +177,9 @@ function App() {
   const handleUserUpdate = (name) => {
     setUser(name);
   }
-  useEffect(() => {}, [countyName, user]);
+  useEffect(() => {
+    setIsModalOpen(!isModalOpen);
+  }, [countyName, user]);
   useEffect(() => {
     const fetchData = async () => {
       const data = await CSVReader(CSVPath);
