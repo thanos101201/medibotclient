@@ -7,7 +7,7 @@ import CSVReader from './Components/CSVReader';
 import CSVPath from './assets/qna_pairs_generated_large_version3.csv';
 import ChatPage from './Components/ChatPage';
 import QueryBox from './Components/QueryBox';
-import { Container, Row, Col, Nav, NavbarBrand, Navbar, Button, Modal, TabContent, TabPane, ModalBody, NavLink, ModalHeader } from 'reactstrap';
+import { Container, Row, Col, Nav, NavbarBrand, Navbar, Button, Modal, TabContent, TabPane, ModalBody, NavLink, ModalHeader, Badge } from 'reactstrap';
 import Signup from './Components/Signup';
 import Login from './Components/Login';
 function App() {
@@ -188,14 +188,35 @@ function App() {
     fetchData();
   }, []);
   const toggle = () => setIsModalOpen(!isModalOpen);
+
+  const getUserBadgeTitle = (name) => {
+    if(name === 'User'){
+      return name;
+    }
+    console.log(name);
+    
+    var tokens = name.split(' ');
+    console.log(tokens);
+    
+    var title = "";
+    for(var i=0;i<tokens.length;i++){
+      title = title + tokens[i][0];
+      console.log(`${title} : ${tokens[i]}`);
+      
+    }
+    title = title.trim();
+    title = title.toUpperCase();
+    return title;
+  }
+
   return (
     <Container fluid className="vh-100 d-flex flex-column">
       {/* Modal for Login and Signup */}
       <Modal isOpen={isModalOpen} toggle={toggle}>
         <ModalHeader>
-          <Nav tabs>
-            <NavLink onClick={() => setActiveTab('1')}>Login</NavLink>
-            <NavLink onClick={() => setActiveTab('2')}>Sign up</NavLink>
+          <Nav pills>
+            <NavLink className={activeTab === '1' ? 'active' : ''} onClick={() => setActiveTab('1')}>Login</NavLink>
+            <NavLink className={activeTab === '2' ? 'active' : ''} onClick={() => setActiveTab('2')}>Sign up</NavLink>
           </Nav>
         </ModalHeader>
         <ModalBody>
@@ -211,17 +232,21 @@ function App() {
       </Modal>
 
       {/* Navbar */}
-      <Navbar>
+      <Navbar style={{position: 'fixed', width:'100%', paddingBottom:'20px', zIndex:1}}>
         <NavbarBrand>
           <Button
             style={{
               backgroundColor: 'white',
               border: '0px',
               borderColor: 'white',
+              width:'100%'
             }}
             onClick={() => setIsModalOpen(!isModalOpen)}
           >
-            <h6 style={{ color: 'black' }}>{user.name}</h6>
+            <Badge className='shadow-lg' style={{borderRadius:'56px'}} color='primary'>
+              {/* <h6>{user.name}</h6> */}
+              <h6>{getUserBadgeTitle(user.name)}</h6>
+            </Badge>
           </Button>
         </NavbarBrand>
       </Navbar>

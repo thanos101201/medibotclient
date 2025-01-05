@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Button, Input, Label } from 'reactstrap';
+import { Button, Form, FormGroup, Input, Label } from 'reactstrap';
 import axios from 'axios';
 
 function Signup({ handleUserUpdate }) {
@@ -39,37 +39,44 @@ function Signup({ handleUserUpdate }) {
     useEffect(() => {}, [borderColor]);
 
   return (
-    <>
-        <div className='row d-flex justify-content-center p-2'>
-            <div className='col-12 col-md-3'>
-                <Label>Email</Label>
-            </div>
-            <div className='col-12 col-md-9'>
-                <Input style={{borderColor:`${borderColor}`}} placeholder='Enter your registered email id.' onChange={(e) => setEmail(e.target.value)} />
-            </div>
+    <Form>
+        <FormGroup>
+            <Label for="signEmail">Email</Label>
+            <Input
+                id='signEmail'
+                type='email'
+                value={email}
+                placeholder='Enter your registered email id.'
+                onChange={(e) => setEmail(e.target.value)}
+                style={{borderColor: borderColor}}
+            />
+        </FormGroup>
+        <FormGroup>
+            <Label for="signName">Name</Label>
+            <Input
+                id='signName'
+                type='text'
+                value={name}
+                placeholder='Enter your name'
+                onChange={(e) => setName(e.target.value)}
+                style={{borderColor: borderColor}}
+            />
+        </FormGroup>
+        <FormGroup>
+            <Label for="signPassword">Password</Label>
+            <Input
+                id='signPassword'
+                type='password'
+                value={password}
+                placeholder='Enter yor password'
+                onChange={(e) => setPassword(e.target.value)}
+                style={{borderColor: borderColor}}
+            />
+        </FormGroup>
+        <div className='text-center'>
+            <Button className='btn btn-danger' onClick={handleSignup}>Sign up</Button>
         </div>
-        <div className='row d-flex justify-content-center p-2'>
-            <div className='col-12 col-md-3'>
-                <Label>Name</Label>
-            </div>
-            <div className='col-12 col-md-9'>
-                <Input style={{borderColor:`${borderColor}`}} placeholder='Enter your name.' onChange={(e) => setName(e.target.value)} />
-            </div>
-        </div>
-        <div className='row d-flex justify-content-center p-2'>
-            <div className='col-12 col-md-3'>
-                <Label>Password</Label>
-            </div>
-            <div className='col-12 col-md-9'>
-                <Input type='password' style={{borderColor:`${borderColor}`}} placeholder='Enter the password associated with provided email.' onChange={(e) => setPassword(e.target.value)} />
-            </div>
-        </div>
-        <div className='row d-flex justify-content-center p-2'>
-            <div className='col-12'>
-                <Button className='btn btn-danger' onClick={handleSignup}>Sign up</Button>
-            </div>
-        </div>
-    </>
+    </Form>
   )
 }
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Button, Input, Label } from 'reactstrap';
+import { Button, Form, FormGroup, Input, Label } from 'reactstrap';
 import axios from 'axios';
 function Login({ handleUserUpdate }) {
     const [email, setEmail] = useState("");
@@ -32,29 +32,33 @@ function Login({ handleUserUpdate }) {
         });
     }
   return (
-    <>
-        <div className='row d-flex justify-content-center p-2'>
-            <div className='col-12 col-md-3'>
-                <Label>Email</Label>
-            </div>
-            <div className='col-12 col-md-9'>
-                <Input style={{borderColor:`${borderColor}`}} placeholder='Enter your registered email id.' onChange={(e) => setEmail(e.target.value)} />
-            </div>
+    <Form>
+        <FormGroup className='mb-3'>
+            <Label for="loginEmail">Email</Label>
+            <Input
+                id='loginEmail'
+                type='email'
+                placeholder='Enter your registered email id'
+                style={{borderColor:borderColor}}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+            />
+        </FormGroup>
+        <FormGroup className='mb-3'>
+            <Label for="loginPassword">Password</Label>
+            <Input
+                id='loginPassword'
+                type='password'
+                placeholder='Enter your password'
+                style={{borderColor:borderColor}}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+            />
+        </FormGroup>
+        <div className="text-center">
+            <Button className='btn btn-success' onClick={handleLogin}>Login</Button>
         </div>
-        <div className='row d-flex justify-content-center p-2'>
-            <div className='col-12 col-md-3'>
-                <Label>Password</Label>
-            </div>
-            <div className='col-12 col-md-9'>
-                <Input type='password' style={{borderColor:`${borderColor}`}} placeholder='Enter the password associated with provided email.' onChange={(e) => setPassword(e.target.value)} />
-            </div>
-        </div>
-        <div className='row d-flex justify-content-center p-2'>
-            <div className='col-12'>
-                <Button className='btn btn-success' onClick={handleLogin}>Login</Button>
-            </div>
-        </div>
-    </>
+    </Form>
   )
 }
 
