@@ -179,7 +179,8 @@ function App() {
   }
   useEffect(() => {
     setIsModalOpen(!isModalOpen);
-  }, [countyName, user]);
+  }, [user]);
+  useEffect(() => {},[countyName]);
   useEffect(() => {
     const fetchData = async () => {
       const data = await CSVReader(CSVPath);
