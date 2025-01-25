@@ -77,11 +77,6 @@ function App() {
       const countyNams = getCountyNameFromPrompt(prompt);
       console.log(countyNams);
       
-      if(countyNams.length > 0){
-        const name = countyNams[0].replace(/[^a-zA-Z0-9 ]/g, "");
-        console.log(name);
-        setCountyName(name);
-      }
       if(questionIndex === null || questionIndex.length === 0){
         var arr = [
           {
@@ -93,6 +88,14 @@ function App() {
             text: "I am not having information regarding asked query"
           }
         ]
+        if(countyNams.length > 0){
+          const name = countyNams[0].replace(/[^a-zA-Z0-9 ]/g, "");
+          console.log(name);
+          setCountyName(null);
+        }
+        else{
+          setCountyName(null);
+        }
         console.log(user.email);
         
         if(user.email !== undefined && user.email !== null && user.email.length !== 0){
@@ -129,6 +132,14 @@ function App() {
             text: questionIndex[0][1]
           }
         ]
+        if(countyNams.length > 0){
+          const name = countyNams[0].replace(/[^a-zA-Z0-9 ]/g, "");
+          console.log(name);
+          setCountyName(name);
+        }
+        else{
+          setCountyName(null);
+        }
         console.log(user.email);
         
         if(user.email !== undefined && user.email !== null && user.email.length !== 0){

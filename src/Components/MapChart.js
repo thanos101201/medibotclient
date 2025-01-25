@@ -30,7 +30,10 @@ function MapChart({ countyName }) {
 
   const center = useMemo(() => {
     const defaultCenter = [-80, 33];
-    if (!countyName || !geoJson?.features) return defaultCenter;
+    if (!countyName || !geoJson?.features){
+      setZoomVal(20);
+      return defaultCenter;
+    } 
 
     const targetFeature = geoJson.features.find(
       (feature) =>
@@ -52,6 +55,10 @@ function MapChart({ countyName }) {
     if (!selectedCounty || mchData.length === 0) return [];
     return mchData.filter((mch) => mch[0] === selectedCounty);
   };
+
+  useEffect(() => {
+    console.log(`County name is ${countyName}`);
+  })
 
   const randomColorGenerator = () => {
     const colors = ["#D4EBF8", "#80C4E9", "#B3C8CF", "#78B3CE", "#C6E7FF"];
@@ -112,34 +119,70 @@ function MapChart({ countyName }) {
                 <ZoomableGroup zoom={zoomVal} center={center}>
                   <Geographies geography={geoJson}>
                     {({ geographies }) =>
-                      geographies.map((geo) => (
-                        <Geography
-                          key={geo.rsmKey}
-                          geography={geo}
-                          style={{
-                            default: {
-                              fill: randomColorGenerator(),
-                              stroke: "#000",
-                              strokeWidth: 0.1,
-                              outline: "none",
-                            },
-                            hover: {
-                              fill: "#FFD700",
-                              outline: "none",
-                            },
-                            pressed: {
-                              fill: "#FFA500",
-                              outline: "none",
-                            },
-                          }}
-                          onMouseEnter={() => setHoveredCounty(geo.properties.county_nam)}
-                          onMouseLeave={() => setHoveredCounty("")}
-                          onClick={() => {
-                            setSelectedCounty(geo.properties.county_nam);
-                            setIsModalOpen(true);
-                          }}
-                        />
-                      ))
+                    {
+                      return geographies.map((geo) => 
+                      {
+                        if(geo.properties !== null && geo.properties.county_nam === countyName)
+                        {
+                          return (
+                            <Geography
+                              key={geo.rsmKey}
+                              geography={geo}
+                              style={{
+                                default: {
+                                  fill: "red",
+                                  stroke: "#000",
+                                  strokeWidth: 0.1,
+                                  outline: "none"
+                                },
+                                hover: {
+                                  fill: "#FFD700",
+                                  outline: "none",
+                                },
+                                pressed: {
+                                  fill: "#FFA500",
+                                  outline: "none",
+                                },
+                              }}
+                              onMouseEnter={() => setHoveredCounty(geo.properties.county_nam)}
+                              onMouseLeave={() => setHoveredCounty("")}
+                              onClick={() => {
+                                setSelectedCounty(geo.properties.county_nam);
+                                setIsModalOpen(true);
+                              }}
+                            />
+                          );
+                        }
+                        return (
+                          <Geography
+                            key={geo.rsmKey}
+                            geography={geo}
+                            style={{
+                              default: {
+                                fill: randomColorGenerator(),
+                                stroke: "#000",
+                                strokeWidth: 0.1,
+                                outline: "none",
+                              },
+                              hover: {
+                                fill: "#FFD700",
+                                outline: "none",
+                              },
+                              pressed: {
+                                fill: "#FFA500",
+                                outline: "none",
+                              },
+                            }}
+                            onMouseEnter={() => setHoveredCounty(geo.properties.county_nam)}
+                            onMouseLeave={() => setHoveredCounty("")}
+                            onClick={() => {
+                              setSelectedCounty(geo.properties.county_nam);
+                              setIsModalOpen(true);
+                            }}
+                          />
+                        );
+                      });
+                    }
                     }
                   </Geographies>
                 </ZoomableGroup>
