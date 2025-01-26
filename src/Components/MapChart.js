@@ -5,15 +5,16 @@ import mchCsvPath from '../assets/South_Carolina_Healthviz_Version3_csv.csv';
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from "react-simple-maps";
 import { geoCentroid } from "d3-geo";
 import CSVReader from "./CSVReader";
-import { Col, Label, Modal, ModalBody, ModalHeader, Row, Spinner } from "reactstrap";
+import { Col, Label, Modal, ModalBody, ModalHeader, Row, Spinner, Button } from "reactstrap";
 
 function MapChart({ countyName }) {
   const [geoJson, setGeoJson] = useState(null);
-  const [zoomVal, setZoomVal] = useState(20);
+  const [zoomVal, setZoomVal] = useState(29);
   const [mchData, setMchData] = useState([]);
   const [selectedCounty, setSelectedCounty] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [hoveredCounty, setHoveredCounty] = useState("");
+  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 768);
 
   useEffect(() => {
     fetch(jsonPath)
@@ -31,7 +32,7 @@ function MapChart({ countyName }) {
   const center = useMemo(() => {
     const defaultCenter = [-80, 33];
     if (!countyName || !geoJson?.features){
-      setZoomVal(20);
+      setZoomVal(29);
       return defaultCenter;
     } 
 
@@ -43,7 +44,7 @@ function MapChart({ countyName }) {
 
     if (targetFeature) {
       const centroid = geoCentroid(targetFeature);
-      setZoomVal(50);
+      setZoomVal(29);
       return centroid;
     }
 
@@ -65,7 +66,46 @@ function MapChart({ countyName }) {
     return colors[Math.floor(Math.random() * colors.length)];
   };
 
+  const handleZoomIn = () => {
+    var zoom = zoomVal;
+    zoom = zoom + 1;
+    console.log(zoom);
+    
+    setZoomVal(zoom);
+  }
+
+  const handleZoomOut = () => {
+    var zoom = zoomVal
+    zoom = zoom - 1;
+    console.log(zoom);
+    setZoomVal(zoom);
+    
+  }
+
+  useEffect(() => {
+    console.log(`Zoom value is ${zoomVal}`);
+  }, [zoomVal]);
+
   const toggle = () => setIsModalOpen(!isModalOpen);
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth <= 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const buttonStyles = {
+    position: "absolute",
+    backgroundColor: "rgba(255, 255, 255, 0.9)",
+    padding: isSmallScreen ? "6px 8px" : "10px 12px",
+    borderRadius: "4px",
+    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
+    fontWeight: "bold",
+    fontSize: isSmallScreen ? "0.75rem" : "1rem",
+  };
+
 
   const renderModalRows = () => {
     const countyData = getCountyData();
@@ -116,7 +156,7 @@ function MapChart({ countyName }) {
                 projectionConfig={{ scale: 250 }}
                 style={{ width: "100%", height: "auto" }}
               >
-                <ZoomableGroup zoom={25} center={center}>
+                <ZoomableGroup zoom={zoomVal} center={center}>
                   <Geographies geography={geoJson}>
                     {({ geographies }) =>
                     {
@@ -203,6 +243,24 @@ function MapChart({ countyName }) {
                   {hoveredCounty}
                 </div>
               )}
+              <div
+                  style={{
+                    ...buttonStyles,
+                    top: "70px",
+                    right: "10px",
+                  }}
+                >
+                  <Button onClick={() => handleZoomIn()}>+</Button>
+                </div>
+                <div
+                  style={{
+                    ...buttonStyles,
+                    top: "130px",
+                    right: "10px",
+                  }}
+                >
+                  <Button onClick={() => handleZoomOut()}>-</Button>
+                </div>
             </>
           ) : (
             <div
