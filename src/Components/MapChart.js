@@ -116,7 +116,7 @@ function MapChart({ countyName }) {
                 projectionConfig={{ scale: 250 }}
                 style={{ width: "100%", height: "auto" }}
               >
-                <ZoomableGroup zoom={zoomVal} center={center}>
+                <ZoomableGroup zoom={20} center={center}>
                   <Geographies geography={geoJson}>
                     {({ geographies }) =>
                     {
