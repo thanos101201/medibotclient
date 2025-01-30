@@ -11,14 +11,21 @@ import { Container, Row, Col, Nav, NavbarBrand, Navbar, Button, Modal, TabConten
 import Signup from './Components/Signup';
 import Login from './Components/Login';
 function App() {
+  /// State variable to store the prompt provided by the user.
   const [userPrompt, setUserPrompt] = useState([]);
+  /// State variable to store the questionaire read from the csv file.
   const [questionaire, setQuestionaire] = useState([]);
+  /// State variable to store the name of the county present in user prompt.
   const [countyName, setCountyName] = useState("");
+  /// State variable to store the user credential (email)
   const [user, setUser] = useState({name: "User"})
+  /// State variable to store the open state of the modal.
   const [isModalOpen, setIsModalOpen] = useState(false);
+  /// State varialble to store the currently active tab.
   const [ activeTab, setActiveTab ] = useState("1");
+  /// State variable to show and hide chat interface.
   const [ showChat, setShowChat ] = useState(false);
-
+  /// Name of the counties present in the csv.
   const countyNames = [
     "Abbeville",
     "Aiken",
@@ -67,16 +74,23 @@ function App() {
     "Williamsburg",
     "York"
   ]
+  /// Stores the url of the backend-server to which requests are made by the application
+  /// for fetching data.
   const serverUrl = "https://demochatbotserver.vercel.app";
   // const serverUrl = "http://localhost:3001"
+
+  /// Function for extracting response for the provided query.
+  /// handleClick is passed as a prop to the QueryBox component.
   const handleClick = (prompt) => {
     if(questionaire !== undefined && questionaire.length > 0){
-      // console.log(prompt);
+      /// Filtering the appropriate response for the provided query.
       var questionIndex = questionaire.filter(question => question[0] === prompt);
-      // console.log(questionIndex);
+      /// Extracting the county name present in the query.
       const countyNams = getCountyNameFromPrompt(prompt);
       console.log(countyNams);
-      
+      /// Adding chat object to the database with no response
+      /// If no appropriate response is obtained for the provided
+      /// query.
       if(questionIndex === null || questionIndex.length === 0){
         var arr = [
           {
@@ -97,7 +111,8 @@ function App() {
           setCountyName(null);
         }
         console.log(user.email);
-        
+        /// Making a post request to the server for storing the chat object to the database
+        /// for future reference.
         if(user.email !== undefined && user.email !== null && user.email.length !== 0){
           axios.post(`${serverUrl}/chat`, {
             userTag: "user",
@@ -122,6 +137,8 @@ function App() {
         setUserPrompt(arr);
       }
       else{
+        /// Creating chat object with the appropriate response obtained
+        /// from the csv.
         var arr = [
           {
             userTag: "user",
@@ -135,13 +152,16 @@ function App() {
         if(countyNams.length > 0){
           const name = countyNams[0].replace(/[^a-zA-Z0-9 ]/g, "");
           console.log(name);
+          /// countyName name can be set, so that the MapChart component can zoom
+          /// on to the corresponding county map.
           setCountyName(name);
         }
         else{
           setCountyName(null);
         }
         console.log(user.email);
-        
+        /// Making post request to the server for storing chat object
+        /// in the database.
         if(user.email !== undefined && user.email !== null && user.email.length !== 0){
           axios.post(`${serverUrl}/chat`, {
             userTag: "user",
@@ -168,10 +188,14 @@ function App() {
     }
   }
 
+  /// Extracts the name of county present in the porvided prompt.
   const getCountyNameFromPrompt = (prompt) => {
+    /// Splitting the prompt based on the space between elements.
     var tokens = prompt.split(" ");
     console.log(tokens[0]);
     var elements = [];
+    /// Looping over the tokens and checking if any token
+    /// is present in the county names list.
     for(var element in tokens){
       var name = tokens[element].replace(/[^a-zA-Z0-9 ]/g, "");
       console.log(`${tokens[element]} : ${name}`);
@@ -185,13 +209,21 @@ function App() {
     
     return elements;
   }
+  /// Updating the user creds when the 
+  /// user successfully makes login or signin.
   const handleUserUpdate = (name) => {
     setUser(name);
   }
+  /// Reseting the value of isModalOpen state variable
+  /// as soon as the page rerenders.
   useEffect(() => {
     setIsModalOpen(!isModalOpen);
   }, [user]);
+  /// Forcing a rerender of the component as soon as
+  /// the value of countyName is updated.
   useEffect(() => {},[countyName]);
+  /// Reading the csv file containing the questionaire
+  /// when the component renders for the first time.
   useEffect(() => {
     const fetchData = async () => {
       const data = await CSVReader(CSVPath);
@@ -199,8 +231,12 @@ function App() {
     };
     fetchData();
   }, []);
+  /// toggle resets the value of isModelOpen
   const toggle = () => setIsModalOpen(!isModalOpen);
 
+  /// getUserBadgeTitle returns an appropriate value
+  /// of the title displayed in the badge based on the
+  /// value of user state variable.
   const getUserBadgeTitle = (name) => {
     if(name === 'User'){
       return name;

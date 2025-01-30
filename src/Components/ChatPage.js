@@ -2,17 +2,22 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col, Label, Container } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
-
+/// ChatPage renders the chat interface of the application.
 function ChatPage({ query, email }) {
+  /// Stores the value of prompts provided by the user.
   const [prompts, setPrompts] = useState([]);
   // const serverUrl = "http://localhost:3001";
   const serverUrl = "https://demochatbotserver.vercel.app";
+
+  /// Adding the query prop to the prompts as soon as the value
+  /// of the query is updated.
   useEffect(() => {
     if (query && query.length > 0) {
       setPrompts([...prompts, ...query]);
     }
   }, [query]);
-
+  /// Fetches the previous chat conversations done between application
+  /// and the user, as soon as the value of email prop is updated.
   useEffect(() => {
     if(email === undefined || email === null || email.length === 0){
       return;
@@ -33,11 +38,14 @@ function ChatPage({ query, email }) {
     });
   }, [email]);
 
+  /// Forcing rerender as soon as atleast one of the propmts
+  /// or email change.
   useEffect(() => {
     console.log(email);
     
   }, [prompts, email]);
   const renderChat = () => {
+    /// Renders chat object.
     if (prompts.length === 0) {
       return (
         <div className="d-flex align-items-center justify-content-center h-100">
