@@ -1,70 +1,34 @@
-# Getting Started with Create React App
+# MediBot
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Chatbot application for providing details regarding medicaid provided in the year 2022 in South Carolina province of United States.
 
-## Available Scripts
+## Components
 
-In the project directory, you can run:
+The components of MediBot are mentioned below:
 
-### `npm start`
+### `MapChart`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+MapChart is the component responsible for rendering the map of South Carolina's counties. The component is also responsible for highlighting county as soon as the application is able to generate an appropriate response for the user queries.
+MapChart allows user to get more details regarding any of the county, by justing clicking on the county.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### `ChatPage`
 
-### `npm test`
+The chat interface of the application is suported by the ChatPage component. ChatPage enables user to view their conversations with the application. ChatPage is initially hidden and can be opened using
+the button present at the bottom right corner of the main layout. The page can be hidden again using the same button.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### `QueryBox`
 
-### `npm run build`
+User can provide their queries to the application using QueryBox. QueryBox is present beneath ChatPage, and is initially hidden. The QueryBox can be viewed and hid using the same button which shows ChatPage.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### `Login / Sign Up`
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+In order to save context of conversation, the application needs to store the conversation. Saving converstion also allows the users to visit the previous conversation they had with the application.
+In order to ensure privacy of the conversation, the application requrires the user to sign up or log in so that the conversation can be bound with the user credentials.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## CSVReader
 
-### `npm run eject`
+CSVReader is responsible for reading the questionaire present at the csv file in the assets folder. The function makes use of *** PapaParse ***! for parsing the data read from the csv to an object.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## App
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+The parent application of all the components mentioned above is the App component. App component makes sure that all the child component are re-rendered as per requirement. The App provides the main layout of the application, by keeping different child components at their places on the user interface.
