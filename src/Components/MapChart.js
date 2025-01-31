@@ -8,14 +8,22 @@ import CSVReader from "./CSVReader";
 import { Col, Label, Modal, ModalBody, ModalHeader, Row, Spinner, Button } from "reactstrap";
 
 function MapChart({ countyName }) {
+  /// State variable to store geoJson data which is used for viewing the map.
   const [geoJson, setGeoJson] = useState(null);
+  /// State variable to store the value of zoom level on the map.
   const [zoomVal, setZoomVal] = useState(29);
+  /// State variable to store the selected county data.
   const [mchData, setMchData] = useState([]);
+  /// State variable to store the selected county name.
   const [selectedCounty, setSelectedCounty] = useState("");
+  /// State variable to store the open state of the modal.
   const [isModalOpen, setIsModalOpen] = useState(false);
+  /// State variable to store the name of hovered county.
   const [hoveredCounty, setHoveredCounty] = useState("");
+  /// State variable to store the flag which specifies whether the screen is small sized or not.
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 768);
 
+  /// Fetches the county data as soon as the component renders for the first time.
   useEffect(() => {
     fetch(jsonPath)
       .then((response) => response.json())
@@ -29,6 +37,7 @@ function MapChart({ countyName }) {
     fetchData();
   }, []);
 
+  /// Sets the focus center of the map.
   const center = useMemo(() => {
     const defaultCenter = [-80, 33];
     if (!countyName || !geoJson?.features){
@@ -52,6 +61,7 @@ function MapChart({ countyName }) {
     return defaultCenter;
   }, [countyName, geoJson]);
 
+  /// Sets the data of the selected county to the state variable.
   const getCountyData = () => {
     if (!selectedCounty || mchData.length === 0) return [];
     return mchData.filter((mch) => mch[0] === selectedCounty);
@@ -61,11 +71,13 @@ function MapChart({ countyName }) {
     console.log(`County name is ${countyName}`);
   })
 
+  /// Generates color randomly for the counties.
   const randomColorGenerator = () => {
     const colors = ["#D4EBF8", "#80C4E9", "#B3C8CF", "#78B3CE", "#C6E7FF"];
     return colors[Math.floor(Math.random() * colors.length)];
   };
 
+  /// Makes the map interface to zoom in.
   const handleZoomIn = () => {
     var zoom = zoomVal;
     zoom = zoom + 1;
@@ -74,6 +86,7 @@ function MapChart({ countyName }) {
     setZoomVal(zoom);
   }
 
+  /// Makes the map interface to zoom out.
   const handleZoomOut = () => {
     var zoom = zoomVal
     zoom = zoom - 1;
@@ -86,6 +99,7 @@ function MapChart({ countyName }) {
     console.log(`Zoom value is ${zoomVal}`);
   }, [zoomVal]);
 
+  /// Toggles the modal which shows the detail of the selected county.
   const toggle = () => setIsModalOpen(!isModalOpen);
   useEffect(() => {
     const handleResize = () => {
@@ -96,6 +110,7 @@ function MapChart({ countyName }) {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  /// Stores the style of the zoom in and zoom out buttons.
   const buttonStyles = {
     position: "absolute",
     backgroundColor: "rgba(255, 255, 255, 0.9)",
@@ -107,6 +122,9 @@ function MapChart({ countyName }) {
   };
 
 
+  /// Renders the rows of the modal which shows counties details.
+  /// Each row contain two columns, one for property name and the 
+  /// other one for property value.
   const renderModalRows = () => {
     const countyData = getCountyData();
     const headers = mchData[0];
@@ -125,6 +143,7 @@ function MapChart({ countyName }) {
     ));
   };
 
+  /// Renders the MapChart component.
   return (
     <div className="container" style={{ padding: "20px" }}>
       <Modal isOpen={isModalOpen} toggle={toggle}>
@@ -160,6 +179,8 @@ function MapChart({ countyName }) {
                   <Geographies geography={geoJson}>
                     {({ geographies }) =>
                     {
+                      /// Looping over the geographies obtained from the geojson using react-simple-maps
+                      /// and rendering each geography.
                       return geographies.map((geo) => 
                       {
                         if(geo.properties !== null && geo.properties.county_nam === countyName)
